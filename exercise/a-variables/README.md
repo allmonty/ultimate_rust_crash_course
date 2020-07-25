@@ -33,25 +33,113 @@
 
 ### Part 2
 
-- [ ] After the first `println!(...)`, subtract `ready` from `missiles` like this:
+- [x] After the first `println!(...)`, subtract `ready` from `missiles` like this:
   - `missiles = missiles - ready;`
-- [ ] Add a second `println!(...)` to the end:
+- [x] Add a second `println!(...)` to the end:
   - `println!("{} missiles left", missiles);`
-- [ ] Run your program again using cargo
+- [x] Run your program again using cargo
   - Did you run into an error about mutability?  Make sure you added `mut` to the right place.
-- [ ] Declare a constant named `STARTING_MISSILES` and set it to `8` (the type is `i32`).
-- [ ] Declare a constant named `READY_AMOUNT` and set it to `2` (also `i32`).
-- [ ] Use the constants to initialize `missiles` and `ready`
+  ```sh
+  ➜  variables git:(resolution) cargo run
+    Compiling variables v2.3.4 (/Users/allan.david/dev/personal/ultimate_rust_crash_course/exercise/a-variables/variables)
+  error[E0384]: cannot assign twice to immutable variable `missiles`
+  --> src/main.rs:5:5
+    |
+  2 |     let missiles = 8;
+    |         --------
+    |         |
+    |         first assignment to `missiles`
+    |         help: make this binding mutable: `mut missiles`
+  ...
+  5 |     missiles = missiles - ready;
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot assign twice to immutable variable
+
+  error: aborting due to previous error
+
+  For more information about this error, try `rustc --explain E0384`.
+  error: could not compile `variables`.
+
+  To learn more, run the command again with --verbose.
+  ```
+- [x] Declare a constant named `STARTING_MISSILES` and set it to `8` (the type is `i32`).
+- [x] Declare a constant named `READY_AMOUNT` and set it to `2` (also `i32`).
+- [x] Use the constants to initialize `missiles` and `ready`
   - Where did you put the constants?  If you put them in `main()`, try moving them up above main at module scope! 
-- [ ] Nice. Congratulate yourself on a job well done!  You are a Rust programmer now!
+- [x] Nice. Congratulate yourself on a job well done!  You are a Rust programmer now!
 
 ### Extra challenges:
-- [ ] Explicitly annotate the variables with the type `i32`
-- [ ] Try binding the variables all at once on one line using a pattern (parenthesis and commas) -- can you figure out where "mut" goes?
-  - [ ] Can you figure out the correct type annotation when you assign them all in one line?
+- [x] Explicitly annotate the variables with the type `i32`
+- [x] Try binding the variables all at once on one line using a pattern (parenthesis and commas) -- can you figure out where "mut" goes?
+  - [x] Can you figure out the correct type annotation when you assign them all in one line?
     Hint: it will use the same sort of pattern as the variables and values.
-- [ ] Instead of changing missiles, use the value `missiles - ready` directly in the second `println!(...)`
+- [x] Instead of changing missiles, use the value `missiles - ready` directly in the second `println!(...)`
   - What does cargo say when you run your program?
-- [ ] Add another variable to your program *but don't use it*.
+    ```sh
+    ➜  variables git:(resolution) ✗ cargo run
+    Compiling variables v2.3.4 (/Users/allan.david/dev/personal/ultimate_rust_crash_course/exercise/a-variables/variables)
+    warning: variable does not need to be mutable
+    --> src/main.rs:5:10
+      |
+    5 |     let (mut missiles, ready) : (i32, i32) = (STARTING_MISSILES, READY_AMOUNT);
+      |          ----^^^^^^^^
+      |          |
+      |          help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` on by default
+
+    warning: 1 warning emitted
+
+        Finished dev [unoptimized + debuginfo] target(s) in 0.21s
+        Running `target/debug/variables`
+    Firing 2 of my 8 missiles...
+    6 missiles left
+    ```
+- [x] Add another variable to your program *but don't use it*.
   - What does cargo say when you run your program?
-- [ ] Try modifying a constant in `main()` (for example, `READY_AMOUNT = 1`). What does the error look like?
+  ```sh
+  ➜  variables git:(resolution) ✗ cargo run
+    Compiling variables v2.3.4 (/Users/allan.david/dev/personal/ultimate_rust_crash_course/exercise/a-variables/variables)
+  warning: unused variable: `not_used`
+  --> src/main.rs:8:9
+    |
+  8 |     let not_used = 1;
+    |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_not_used`
+    |
+    = note: `#[warn(unused_variables)]` on by default
+
+  warning: variable does not need to be mutable
+  --> src/main.rs:5:10
+    |
+  5 |     let (mut missiles, ready) : (i32, i32) = (STARTING_MISSILES, READY_AMOUNT);
+    |          ----^^^^^^^^
+    |          |
+    |          help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` on by default
+
+  warning: 2 warnings emitted
+
+      Finished dev [unoptimized + debuginfo] target(s) in 0.21s
+      Running `target/debug/variables`
+  Firing 2 of my 8 missiles...
+  6 missiles left
+  ```
+- [x] Try modifying a constant in `main()` (for example, `READY_AMOUNT = 1`). What does the error look like?
+  ```sh
+  ➜  variables git:(resolution) ✗ cargo run
+    Compiling variables v2.3.4 (/Users/allan.david/dev/personal/ultimate_rust_crash_course/exercise/a-variables/variables)
+  error[E0070]: invalid left-hand side of assignment
+  --> src/main.rs:9:23
+    |
+  9 |     STARTING_MISSILES = 10;
+    |     ----------------- ^
+    |     |
+    |     cannot assign to this expression
+
+  error: aborting due to previous error
+
+  For more information about this error, try `rustc --explain E0070`.
+  error: could not compile `variables`.
+
+  To learn more, run the command again with --verbose.
+  ```

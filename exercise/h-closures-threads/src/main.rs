@@ -62,43 +62,62 @@ fn main() {
 
     
     let (tx, rx) = channel::unbounded();
+    let (tx3, rx3) = (tx.clone(), rx.clone());
+    let rx4 = rx3.clone();
+
     // Cloning a channel makes another variable connected to that end of the channel so that you can
     // send it to another thread.
-    let tx2 = tx.clone();
+    // let tx2 = tx.clone();
 
-    let handle_a = thread::spawn(move || {
-        pause_ms(0);
-        tx2.send("Thread A: 1").unwrap();
-        pause_ms(50);
-        tx2.send("Thread A: 2").unwrap();
-    });
+    // let handle_a = thread::spawn(move || {
+    //     pause_ms(0);
+    //     tx2.send("Thread A: 1").unwrap();
+    //     pause_ms(50);
+    //     tx2.send("Thread A: 2").unwrap();
+    // });
 
-    pause_ms(100); // Make sure Thread A has time to get going before we spawn Thread B
+    // pause_ms(100); // Make sure Thread A has time to get going before we spawn Thread B
 
-    let handle_b = thread::spawn(move || {
-        pause_ms(0);
-        tx.send("Thread B: 1").unwrap();
-        pause_ms(200);
-        tx.send("Thread B: 2").unwrap();
-    });
+    // let handle_b = thread::spawn(move || {
+    //     pause_ms(0);
+    //     tx.send("Thread B: 1").unwrap();
+    //     pause_ms(200);
+    //     tx.send("Thread B: 2").unwrap();
+    // });
 
     // Using a Receiver channel as an iterator is a convenient way to get values until the channel
     // gets closed.  A Receiver channel is automatically closed once all Sender channels have been
     // closed.  Both our threads automatically close their Sender channels when they exit and the
     // destructors for the channels get automatically called.
-    for msg in rx {
-        println!("Main thread: Received {}", msg);
-    }
+    // for msg in rx {
+    //     println!("Main thread: Received {}", msg);
+    // }
 
     // Join the child threads for good hygiene.
-    handle_a.join().unwrap();
-    handle_b.join().unwrap();
+    // handle_a.join().unwrap();
+    // handle_b.join().unwrap();
     
-
     // Challenge: Make two child threads and give them each a receiving end to a channel.  From the
     // main thread loop through several values and print each out and then send it to the channel.
     // On the child threads print out the values you receive. Close the sending side in the main
     // thread by calling `drop(tx)` (assuming you named your sender channel variable `tx`).  Join
     // the child threads.
+
+    let handle_c = thread::spawn(move || {
+        for msg in rx3 { println!("C -> {}", msg) }
+    });
+    let handle_d = thread::spawn(move || {
+        loop { println!("D -> {}", rx4.recv().unwrap()) }
+    });
+
+    pause_ms(50);
+
+    for i in 0..1000 {tx3.send(i).unwrap();};
+    drop(tx3);
+    drop(tx);
+
+    handle_c.join().unwrap();
+    handle_d.join().unwrap();
+
     println!("Main thread: Exiting.")
 }
